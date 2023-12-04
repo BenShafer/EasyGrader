@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">EasyGrader</string>
+    <string name="preference_file_key">com.benjamin.easygrader.PREFERENCE_FILE_KEY</string>
+    <string name="logged_in_user_id_key">com.benjamin.easygrader.LOGGED_IN_USER_ID_KEY</string>
+    <string name="user_is_admin_key">com.benjamin.easygrader.USER_IS_ADMIN_KEY</string>
+    <string name="sign_in">Sign In</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="add_user">Add User</string>
+    <string name="delete_user">Delete User</string>
+    <string name="add_course">Add Course</string>
+    <string name="remove_course">Remove Course</string>
+    <string name="enroll_students">Enroll Students</string>
+    <string name="logout">Logout</string>
+    <string name="admin">Admin</string>
+    <string name="add_assignment">Add Assignment</string>
+    <string name="remove_assignment">Remove Assignment</string>
+    <string name="modify_assignment">Modify Assignment</string>
+    <string name="grade_assignments">Grade Assignments</string>
+    <string name="finalize_grades">Finalize Grades</string>
 </resources>
