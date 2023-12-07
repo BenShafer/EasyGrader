@@ -13,8 +13,6 @@ public class UserRepository {
   private static volatile UserRepository instance;
   private static final String TAG = "UserRepository";
   private final UserDAO mUserDAO;
-  private User mLoggedInUser;
-
 
   private UserRepository(Application application) {
     AppDatabase db = AppDatabase.getDatabase(application);
@@ -29,11 +27,6 @@ public class UserRepository {
         Log.d(TAG, "UserRepository: inserted testuser1 and admin2");
       }
     });
-    if (mLoggedInUser == null) {
-      Log.d(TAG, "UserRepository: mLoggedInUser is null");
-    } else {
-      Log.d(TAG, "UserRepository: mLoggedInUser is not null " + mLoggedInUser);
-    }
   }
 
   // singleton repository instance
@@ -73,27 +66,32 @@ public class UserRepository {
     });
   }
 
-//  public void getLoggedInUser(MutableLiveData<User> loggedInUser) {
-//    Log.d(TAG, "getLoggedInUser: " + mLoggedInUser.toString());
-//    loggedInUser.postValue(mLoggedInUser);
-//  }
-//  public User getLoggedInUser() {
-//    if (mLoggedInUser != null) {
-//      Log.d(TAG, "getLoggedInUser: " + mLoggedInUser);
-//      return mLoggedInUser;
-//    } else {
-//      Log.d(TAG, "getLoggedInUser: null");
-//      return null;
-//    }
-//  }
+  public LiveData<List<User>> getAllUsers() { return mUserDAO.getAllUsers(); }
+
+  public void addUser(String username, String password, boolean isAdmin, MutableLiveData<Boolean> isAddingUser, MutableLiveData<Boolean> isUsernameTaken) {
+    AppDatabase.databaseWriteExecutor.execute(() -> {
+      User userByUsername = mUserDAO.getUserByUsername(username);
+      if (userByUsername != null) {
+        Log.d(TAG, "addUser: username taken");
+        isUsernameTaken.postValue(true);
+        isAddingUser.postValue(false);
+      } else {
+        User user = new User(username, password, isAdmin);
+        Log.d(TAG, "addUser: inserting new user: " + user);
+        mUserDAO.insert(user);
+        isAddingUser.postValue(false);
+      }
+    });
+  }
+
   public User getUserById(int id) {
     return mUserDAO.getUserById(id);
   }
 
-
-
-
-
-
-
+  public void deleteUser(User user) {
+    Log.d(TAG, "deleteUser: " + user);
+    AppDatabase.databaseWriteExecutor.execute(() -> {
+      mUserDAO.delete(user);
+    });
+  }
 }

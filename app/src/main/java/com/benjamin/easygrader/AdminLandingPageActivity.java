@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.benjamin.easygrader.util.Destination;
 import com.benjamin.easygrader.util.IntentFactory;
 import com.benjamin.easygrader.viewmodel.LandingViewModel;
 
@@ -82,17 +83,14 @@ public class AdminLandingPageActivity extends AppCompatActivity {
     });
 
 
+    mAddUserButton.setOnClickListener(view -> {
+      startActivity(IntentFactory.getManageUsersActivityIntent(getApplicationContext(), Destination.CREATE_USER));
+    });
 
-
-
-
-
-
-
-
-
-
-
+    mDeleteUserButton.setOnClickListener(view -> {
+      startActivity(IntentFactory.getManageUsersActivityIntent(getApplicationContext(), Destination.REMOVE_USER));
+    });
+    
 
 
 
