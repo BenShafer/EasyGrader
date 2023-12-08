@@ -27,6 +27,9 @@ public interface UserDAO {
   @Query("SELECT * FROM " + AppDatabase.USER_TABLE)
   LiveData<List<User>> getAllUsers();
 
+  @Query("SELECT * FROM " + AppDatabase.USER_TABLE + " WHERE is_admin = 0")
+  LiveData<List<User>> getAllInstructors();
+
   @Insert
   void insert(User user);
 

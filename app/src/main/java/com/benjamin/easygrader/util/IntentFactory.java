@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.benjamin.easygrader.AdminLandingPageActivity;
+import com.benjamin.easygrader.EnrollStudentActivity;
 import com.benjamin.easygrader.InstructorLandingPageActivity;
 import com.benjamin.easygrader.LoginActivity;
 import com.benjamin.easygrader.MainActivity;
+import com.benjamin.easygrader.ManageCoursesActivity;
 import com.benjamin.easygrader.ManageUsersActivity;
 import com.benjamin.easygrader.SelectCourseActivity;
 
@@ -47,6 +49,20 @@ public class IntentFactory {
     intent.putExtra(DESTINATION_EXTRA, destination);
     return intent;
   }
+
+  public static Intent getManageCoursesActivityIntent(Context context, Destination destination) {
+    Intent intent = new Intent(context, ManageCoursesActivity.class);
+    intent.putExtra(DESTINATION_EXTRA, destination);
+    return intent;
+  }
+
+  public static Intent getEnrollStudentActivityIntent(Context context, int courseId) {
+    Intent intent = new Intent(context, EnrollStudentActivity.class);
+    intent.putExtra(COURSE_ID_EXTRA, courseId);
+    return intent;
+  }
+
+
 
 
 }
