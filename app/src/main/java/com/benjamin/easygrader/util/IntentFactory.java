@@ -7,18 +7,14 @@ import com.benjamin.easygrader.AdminLandingPageActivity;
 import com.benjamin.easygrader.InstructorLandingPageActivity;
 import com.benjamin.easygrader.LoginActivity;
 import com.benjamin.easygrader.MainActivity;
+import com.benjamin.easygrader.ManageUsersActivity;
 import com.benjamin.easygrader.SelectCourseActivity;
 
 public class IntentFactory {
 
-//  public static final String MAIN_ACTIVITY = "com.benjamin.easygrader.MainActivity";
-//  public static final String LOGIN_ACTIVITY = "com.benjamin.easygrader.LoginActivity";
-//  public static final String ADMIN_LANDING_PAGE_ACTIVITY = "com.benjamin.easygrader.AdminLandingPageActivity";
-//  public static final String INSTRUCTOR_LANDING_PAGE_ACTIVITY = "com.benjamin.easygrader.InstructorLandingPageActivity";
-//  public static final String SELECT_COURSE_ACTIVITY = "com.benjamin.easygrader.SelectCourseActivity";
-
   public static final String USER_ID_EXTRA = "com.benjamin.easygrader.userId";
   public static final String COURSE_ID_EXTRA = "com.benjamin.easygrader.courseId";
+  public static final String DESTINATION_EXTRA = "com.benjamin.easygrader.destination";
 
   public static Intent getMainActivityIntent(Context context) {
     return new Intent(context, MainActivity.class);
@@ -45,4 +41,12 @@ public class IntentFactory {
     intent.putExtra(USER_ID_EXTRA, userId);
     return intent;
   }
+
+  public static Intent getManageUsersActivityIntent(Context context, Destination destination) {
+    Intent intent = new Intent(context, ManageUsersActivity.class);
+    intent.putExtra(DESTINATION_EXTRA, destination);
+    return intent;
+  }
+
+
 }
