@@ -68,6 +68,8 @@ public class UserRepository {
 
   public LiveData<List<User>> getAllUsers() { return mUserDAO.getAllUsers(); }
 
+  public LiveData<List<User>> getAllInstructors() { return mUserDAO.getAllInstructors(); }
+
   public void addUser(String username, String password, boolean isAdmin, MutableLiveData<Boolean> isAddingUser, MutableLiveData<Boolean> isUsernameTaken) {
     AppDatabase.databaseWriteExecutor.execute(() -> {
       User userByUsername = mUserDAO.getUserByUsername(username);

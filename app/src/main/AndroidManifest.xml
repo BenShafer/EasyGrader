@@ -13,6 +13,13 @@
         android:theme="@style/Theme.EasyGrader"
         tools:targetApi="34">
         <activity
+            android:name=".EnrollStudentActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ManageCoursesActivity"
             android:exported="false">
             <meta-data

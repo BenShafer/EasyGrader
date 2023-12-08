@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.benjamin.easygrader.R;
 import com.benjamin.easygrader.model.User;
@@ -84,6 +85,7 @@ public class RemoveUserFragment extends Fragment {
                   mUserAdapter.notifyItemRemoved(mUserAdapter.mSelectedPosition);
                   mUserAdapter.mSelectedPosition = -1;
                   dialog.dismiss();
+                  Toast.makeText(requireContext(), "User removed", Toast.LENGTH_SHORT).show();
                 }
               })
               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

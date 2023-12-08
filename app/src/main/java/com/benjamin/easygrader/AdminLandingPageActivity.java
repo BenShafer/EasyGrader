@@ -66,7 +66,7 @@ public class AdminLandingPageActivity extends AppCompatActivity {
       startActivity(IntentFactory.getMainActivityIntent(getApplicationContext()));
     });
 
-    ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(
+    ActivityResultLauncher<Intent> startSelectCourseActivityForId = registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
         result -> {
           if (result.getResultCode() == RESULT_OK) {
@@ -74,14 +74,10 @@ public class AdminLandingPageActivity extends AppCompatActivity {
             if (data != null) {
               mCourseId = data.getIntExtra(IntentFactory.COURSE_ID_EXTRA, -1);
               Log.d(TAG, "result callback: courseId = " + mCourseId);
+              startActivity(IntentFactory.getEnrollStudentActivityIntent(getApplicationContext(), mCourseId));
             }
           }
         });
-
-    mEnrollStudentsButton.setOnClickListener(view -> {
-      startActivityForResult.launch(IntentFactory.getSelectCourseActivityIntent(getApplicationContext(), mUserId));
-    });
-
 
     mAddUserButton.setOnClickListener(view -> {
       startActivity(IntentFactory.getManageUsersActivityIntent(getApplicationContext(), Destination.CREATE_USER));
@@ -90,11 +86,18 @@ public class AdminLandingPageActivity extends AppCompatActivity {
     mDeleteUserButton.setOnClickListener(view -> {
       startActivity(IntentFactory.getManageUsersActivityIntent(getApplicationContext(), Destination.REMOVE_USER));
     });
-    
 
+    mAddCourseButton.setOnClickListener(view -> {
+      startActivity(IntentFactory.getManageCoursesActivityIntent(getApplicationContext(), Destination.ADD_COURSE));
+    });
 
+    mRemoveCourseButton.setOnClickListener(view -> {
+      startActivity(IntentFactory.getManageCoursesActivityIntent(getApplicationContext(), Destination.REMOVE_COURSE));
+    });
 
-
+    mEnrollStudentsButton.setOnClickListener(view -> {
+      startSelectCourseActivityForId.launch(IntentFactory.getSelectCourseActivityIntent(getApplicationContext(), mUserId));
+    });
 
   }
 }
