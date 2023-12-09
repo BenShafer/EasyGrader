@@ -27,7 +27,6 @@ public class EnrollStudentActivity extends AppCompatActivity {
   Button confirmEnrollStudentsBtn;
   TextInputEditText studentIdInputText;
   TextInputEditText studentNameInputText;
-  Button addStudentDialogBtn;
   TextView studentListTextView;
   HashMap<Integer, String> studentList = new HashMap<>();
 
@@ -73,7 +72,6 @@ public class EnrollStudentActivity extends AppCompatActivity {
 
     studentIdInputText = dialogView.findViewById(R.id.studentIdInputText);
     studentNameInputText = dialogView.findViewById(R.id.studentNameInputText);
-    addStudentDialogBtn = dialogView.findViewById(R.id.addStudentDialogBtn);
 
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setView(dialogView);

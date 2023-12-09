@@ -8,6 +8,7 @@ import com.benjamin.easygrader.EnrollStudentActivity;
 import com.benjamin.easygrader.InstructorLandingPageActivity;
 import com.benjamin.easygrader.LoginActivity;
 import com.benjamin.easygrader.MainActivity;
+import com.benjamin.easygrader.ManageAssignmentsActivity;
 import com.benjamin.easygrader.ManageCoursesActivity;
 import com.benjamin.easygrader.ManageUsersActivity;
 import com.benjamin.easygrader.SelectCourseActivity;
@@ -16,6 +17,7 @@ public class IntentFactory {
 
   public static final String USER_ID_EXTRA = "com.benjamin.easygrader.userId";
   public static final String COURSE_ID_EXTRA = "com.benjamin.easygrader.courseId";
+  public static final String COURSE_NAME_EXTRA = "com.benjamin.easygrader.courseName";
   public static final String DESTINATION_EXTRA = "com.benjamin.easygrader.destination";
 
   public static Intent getMainActivityIntent(Context context) {
@@ -62,7 +64,13 @@ public class IntentFactory {
     return intent;
   }
 
-
+  public static Intent getManageAssignmentsActivityIntent(Context context, int courseId, String courseName, Destination destination) {
+    Intent intent = new Intent(context, ManageAssignmentsActivity.class);
+    intent.putExtra(COURSE_ID_EXTRA, courseId);
+    intent.putExtra(COURSE_NAME_EXTRA, courseName);
+    intent.putExtra(DESTINATION_EXTRA, destination);
+    return intent;
+  }
 
 
 }
