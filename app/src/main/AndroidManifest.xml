@@ -13,6 +13,13 @@
         android:theme="@style/Theme.EasyGrader"
         tools:targetApi="34">
         <activity
+            android:name=".ManageGradesActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ManageAssignmentsActivity"
             android:exported="false">
             <meta-data

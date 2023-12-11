@@ -16,7 +16,7 @@ public interface EnrollmentDAO {
   void insert(Enrollment enrollment);
 
   @Insert
-  void insertAll(Enrollment... enrollments);
+  List<Long> insertAll(List<Enrollment> enrollments);
 
   @Update
   void update(Enrollment enrollment);
@@ -25,7 +25,12 @@ public interface EnrollmentDAO {
   void delete(Enrollment enrollment);
 
   @Query("SELECT * FROM " + AppDatabase.ENROLLMENT_TABLE)
-  LiveData<List<Enrollment>> getAllEnrollments();
+  List<Enrollment> getAllEnrollments();
 
+  @Query("SELECT e.mId FROM " + AppDatabase.ENROLLMENT_TABLE + " e WHERE course_id = :courseId")
+  List<Long> getEnrollmentIdsForCourse(int courseId);
+
+  @Query("SELECT COUNT(*) FROM " + AppDatabase.ENROLLMENT_TABLE + " WHERE course_id = :courseId")
+  LiveData<Integer> getEnrollmentCountForCourse(int courseId);
 
 }

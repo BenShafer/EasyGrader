@@ -75,10 +75,15 @@ public class InstructorLandingPageActivity extends AppCompatActivity {
             mCourseId = data.getIntExtra(IntentFactory.COURSE_ID_EXTRA, -1);
             mCourseName = data.getStringExtra(IntentFactory.COURSE_NAME_EXTRA);
             Log.d(TAG, "result callback: courseId = " + mCourseId + ", destination = " + mDestination);
-            startActivity(IntentFactory.getManageAssignmentsActivityIntent(getApplicationContext(), mCourseId, mCourseName, mDestination));
+            if (mDestination == Destination.GRADE_ASSIGNMENT)
+              startActivity(IntentFactory.getManageGradesActivityIntent(getApplicationContext(), mCourseId, mCourseName, mUserId, mDestination));
+            else {
+              startActivity(IntentFactory.getManageAssignmentsActivityIntent(getApplicationContext(), mCourseId, mCourseName, mDestination));
+            }
           }
         }
     });
+
 
     mAddAssignmentButton.setOnClickListener(view -> {
       startSelectCourseActivityForId.launch(IntentFactory.getSelectCourseActivityIntent(getApplicationContext(), mUserId));
@@ -101,10 +106,7 @@ public class InstructorLandingPageActivity extends AppCompatActivity {
     });
 
     mFinalizeGradesButton.setOnClickListener(view -> {
-//      startActivity(IntentFactory.getFinalizeGradesActivityIntent(getApplicationContext(), mUserId));
-
+      startActivity(IntentFactory.getManageGradesActivityIntent(getApplicationContext(), -1, null, mUserId, Destination.FINALIZE_GRADES));
     });
-
-
   }
 }

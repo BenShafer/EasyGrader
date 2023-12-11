@@ -21,9 +21,9 @@ public class Enrollment {
   @ColumnInfo(name="student_name")
   private String mStudentName;
 
-  public Enrollment(int studentId, int courseId, String studentName) {
-    mStudentId = studentId;
+  public Enrollment(int courseId, int studentId, String studentName) {
     mCourseId = courseId;
+    mStudentId = studentId;
     mStudentName = studentName;
   }
 

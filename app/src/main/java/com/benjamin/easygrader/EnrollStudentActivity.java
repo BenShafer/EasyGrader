@@ -61,6 +61,7 @@ public class EnrollStudentActivity extends AppCompatActivity {
         Toast.makeText(this, "No students entered", Toast.LENGTH_SHORT).show();
       } else {
         mManageCoursesViewModel.enrollStudents(mCourseId, studentList);
+        Toast.makeText(this, "Enrolled students successfully", Toast.LENGTH_SHORT).show();
         finish();
       }
     });
