@@ -1,7 +1,6 @@
 package com.benjamin.easygrader.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -20,10 +19,10 @@ public class ManageUsersViewModel extends AndroidViewModel {
   private final UserRepository mUserRepository;
   private final MutableLiveData<Boolean> mIsAddingUser = new MutableLiveData<>();
   private final MutableLiveData<Boolean> mIsUsernameTaken = new MutableLiveData<>();
+  private final MutableLiveData<Boolean> mHasActiveCourses = new MutableLiveData<>();
 
   public ManageUsersViewModel(@NotNull Application application) {
     super(application);
-    Log.d(TAG, "ManageUsersViewModel: initialized");
     mUserRepository = UserRepository.getUserRepository(application);
   }
 
@@ -32,16 +31,26 @@ public class ManageUsersViewModel extends AndroidViewModel {
   public void deleteUser(User user) { mUserRepository.deleteUser(user); }
 
   public void addUser(String username, String password, boolean isAdmin) {
-    Log.d(TAG, "addUser: called");
-    mIsAddingUser.setValue(true);
     mIsUsernameTaken.setValue(false);
+    mIsAddingUser.setValue(true);
     mUserRepository.addUser(username, password, isAdmin, mIsAddingUser, mIsUsernameTaken);
   }
+
   public LiveData<Boolean> getIsAddingUser() {
-    Log.d(TAG, "getIsAddingUser: called");
     return mIsAddingUser; }
+
   public LiveData<Boolean> getIsUsernameTaken() {
-    Log.d(TAG, "getIsUsernameTaken: called");
     return mIsUsernameTaken; }
 
+  public LiveData<List<User>> getAllInstructors() { return mUserRepository.getAllInstructors(); }
+
+  public LiveData<Boolean> getHasActiveCourses() { return mHasActiveCourses; }
+
+  public void hasActiveCourses(int instructorId) {
+    mUserRepository.hasActiveCourses(instructorId, mHasActiveCourses);
+  }
+
+  public void updateInstructorCourses(int oldInstructorId, int newInstructorId) {
+    mUserRepository.updateInstructorCourses(oldInstructorId, newInstructorId);
+  }
 }

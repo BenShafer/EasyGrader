@@ -2,16 +2,20 @@ package com.benjamin.easygrader.util;
 
 import androidx.room.TypeConverter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DataTypeConverter {
+
+  private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
   @TypeConverter
-  public long convertDateToLong(Date date) {
-    return date.getTime();
+  public static LocalDateTime toLocalDateTime(String value) {
+    return value == null ? null : LocalDateTime.parse(value, formatter);
   }
 
   @TypeConverter
-  public Date convertLongToDate(long time) {
-    return new Date(time);
+  public static String fromLocalDateTime(LocalDateTime dateTime) {
+    return dateTime == null ? null : dateTime.format(formatter);
   }
 }

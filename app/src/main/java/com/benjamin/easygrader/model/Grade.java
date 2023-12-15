@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity(tableName = AppDatabase.GRADE_TABLE)
@@ -20,7 +20,7 @@ public class Grade {
   private int mEnrollmentId;
 
   @ColumnInfo(name = "date_submitted")
-  private Date mDateSubmitted;
+  private LocalDateTime mDateSubmitted;
 
   @ColumnInfo(name = "score")
   private int mScore;
@@ -32,7 +32,7 @@ public class Grade {
     mAssignmentId = assignmentId;
     mEnrollmentId = enrollmentId;
     mScore = -1;
-    mDateSubmitted = new Date(0);
+    mDateSubmitted = LocalDateTime.of(1,1,1,1,1);
   }
 
   public int getId() {
@@ -59,11 +59,11 @@ public class Grade {
     mEnrollmentId = enrollmentId;
   }
 
-  public Date getDateSubmitted() {
+  public LocalDateTime getDateSubmitted() {
     return mDateSubmitted;
   }
 
-  public void setDateSubmitted(Date dateSubmitted) {
+  public void setDateSubmitted(LocalDateTime dateSubmitted) {
     mDateSubmitted = dateSubmitted;
   }
 

@@ -49,7 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         mIsLoggingIn = true;
         mLoginViewModel.login(username, password);
       } else {
-        mLoginViewModel.login("admin2", "password");
         Toast.makeText(this, "Please enter a username and password.", Toast.LENGTH_SHORT).show();
       }
     });
@@ -78,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
         }
       }
     });
-
   }
 
   @Override
@@ -96,5 +94,4 @@ public class LoginActivity extends AppCompatActivity {
       }
     }, 2000);
   }
-
 }

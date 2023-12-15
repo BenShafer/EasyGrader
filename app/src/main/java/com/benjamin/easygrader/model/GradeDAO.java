@@ -41,8 +41,14 @@ public interface GradeDAO {
   @Query("SELECT COUNT(*) FROM (SELECT COUNT(*) 'count' FROM " + AppDatabase.GRADE_TABLE + " g " +
       "JOIN " + AppDatabase.ASSIGNMENT_TABLE + " a ON g.assignment_id = a.mId " +
       "WHERE a.course_id = :courseId AND g.score >= 0 GROUP BY g.assignment_id) AS graded " +
-      "WHERE graded.count = (SELECT COUNT(*) FROM " + AppDatabase.ASSIGNMENT_TABLE + " a " +
-      "WHERE a.course_id = :courseId)")
+      "WHERE graded.count = (SELECT COUNT(*) FROM " + AppDatabase.ENROLLMENT_TABLE + " e " +
+      "WHERE e.course_id = :courseId)")
   LiveData<Integer> getCourseGradedAssignmentsCount(int courseId);
 
+  @Query("SELECT COUNT(*) FROM (SELECT COUNT(*) 'count' FROM " + AppDatabase.GRADE_TABLE + " g " +
+      "JOIN " + AppDatabase.ASSIGNMENT_TABLE + " a ON g.assignment_id = a.mId " +
+      "WHERE a.course_id = :courseId AND g.score >= 0 GROUP BY g.assignment_id) AS graded " +
+      "WHERE graded.count = (SELECT COUNT(*) FROM " + AppDatabase.ENROLLMENT_TABLE + " e " +
+      "WHERE e.course_id = :courseId)")
+  int getCourseGradedAssignmentsCountInt(int courseId);
 }

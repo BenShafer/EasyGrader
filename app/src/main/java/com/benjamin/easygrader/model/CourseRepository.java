@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,9 +47,13 @@ public class CourseRepository {
     return mCourseDAO.getInstructorsUnfinalizedCourses(instructorId);
   }
 
-  public void addCourse(String courseName, String semester, int instructorID) {
+  public LiveData<Map<Course, User>> getInstructorWithUnfinalizedCourses(int instructorId) {
+    return mCourseDAO.getInstructorWithUnfinalizedCourses(instructorId);
+  }
+
+  public void addCourse(String courseName, String semester, LocalDateTime semesterEndDate, int instructorID) {
     AppDatabase.databaseWriteExecutor.execute(() -> {
-      Course course = new Course(courseName, semester, instructorID);
+      Course course = new Course(courseName, semester, semesterEndDate, instructorID);
       mCourseDAO.insert(course);
     });
   }
@@ -64,6 +69,8 @@ public class CourseRepository {
   }
 
   public LiveData<Map<Course, User>> getCoursesByInstructorId(int instructorId) { return mCourseDAO.getCoursesByInstructorId(instructorId); }
+
+  public LiveData<List<Enrollment>> getEnrollmentsForCourse(int courseId) { return mEnrollmentDAO.getEnrollmentsForCourse(courseId); }
 
   public void enrollStudents(int courseId, Map<Integer, String> students) {
     AppDatabase.databaseWriteExecutor.execute(() -> {

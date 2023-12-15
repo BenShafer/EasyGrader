@@ -8,9 +8,11 @@ import androidx.lifecycle.LiveData;
 
 import com.benjamin.easygrader.model.Course;
 import com.benjamin.easygrader.model.CourseRepository;
+import com.benjamin.easygrader.model.Enrollment;
 import com.benjamin.easygrader.model.User;
 import com.benjamin.easygrader.model.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +34,8 @@ public class ManageCoursesViewModel extends AndroidViewModel {
     return mCourseRepository.getAllCoursesWithInstructor();
   }
 
-  public void addCourse(String courseName, String semester, int instructorID) {
-    mCourseRepository.addCourse(courseName, semester, instructorID);
+  public void addCourse(String courseName, String semester, LocalDateTime semesterEndDate, int instructorID) {
+    mCourseRepository.addCourse(courseName, semester, semesterEndDate, instructorID);
   }
 
   public void removeCourse(Course course) {
@@ -48,4 +50,5 @@ public class ManageCoursesViewModel extends AndroidViewModel {
     mCourseRepository.enrollStudents(courseId, students);
   }
 
+  public LiveData<List<Enrollment>> getEnrollmentsForCourse(int courseId) { return mCourseRepository.getEnrollmentsForCourse(courseId); }
 }

@@ -1,9 +1,13 @@
 package com.benjamin.easygrader.view;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -11,10 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.benjamin.easygrader.R;
@@ -22,8 +25,9 @@ import com.benjamin.easygrader.model.User;
 import com.benjamin.easygrader.viewmodel.ManageCoursesViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +37,7 @@ import java.util.List;
 public class AddCourseFragment extends Fragment {
   private static final String TAG = "AddCourseFragment";
   private User mSelectedInstructor;
+  private LocalDateTime mSemesterEndDate;
   
   public AddCourseFragment() {
     // Required empty public constructor
@@ -56,6 +61,7 @@ public class AddCourseFragment extends Fragment {
     TextInputEditText mSemesterInput = view.findViewById(R.id.semesterInputText);
     Spinner mInstructorSpinner = view.findViewById(R.id.instructorSpinner);
     Button mConfirmAddCourseBtn = view.findViewById(R.id.confirmAddCourseBtn);
+    TextInputEditText mSemesterEndDateInout = view.findViewById(R.id.semesterEndDateInput);
 
     mManageCoursesViewModel.getAllInstructors().observe(requireActivity(), instructors -> {
       InstructorSpinnerAdapter mInstructorAdapter = new InstructorSpinnerAdapter(getContext(), instructors);
@@ -73,6 +79,17 @@ public class AddCourseFragment extends Fragment {
       });
     });
 
+    mSemesterEndDateInout.setOnClickListener(v -> {
+      DatePickerDialog datePicker = new DatePickerDialog(getContext());
+      datePicker.setOnDateSetListener((view1, year, month, day) -> {
+        Log.d(TAG, "onCreateView: date selected: " + year + ", " + month + ", " + day);
+        mSemesterEndDate = LocalDateTime.of(year, month+1, day, 23, 59, 59);
+        mSemesterEndDateInout.setText(mSemesterEndDate.toString());
+      });
+      datePicker.getDatePicker().setMinDate(System.currentTimeMillis());
+      datePicker.show();
+    });
+
     mConfirmAddCourseBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -81,7 +98,7 @@ public class AddCourseFragment extends Fragment {
         if (courseName.isEmpty() || semester.isEmpty() || mSelectedInstructor == null) {
           Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
         } else {
-          mManageCoursesViewModel.addCourse(courseName, semester, mSelectedInstructor.getId());
+          mManageCoursesViewModel.addCourse(courseName, semester, mSemesterEndDate, mSelectedInstructor.getId());
           Toast.makeText(getContext(), "Course added!", Toast.LENGTH_SHORT).show();
           mCourseInput.setText("");
           mSemesterInput.setText("");

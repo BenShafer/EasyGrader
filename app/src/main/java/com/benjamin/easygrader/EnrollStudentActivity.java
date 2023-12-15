@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.benjamin.easygrader.model.Enrollment;
 import com.benjamin.easygrader.util.IntentFactory;
 import com.benjamin.easygrader.viewmodel.ManageCoursesViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,8 +29,8 @@ public class EnrollStudentActivity extends AppCompatActivity {
   TextInputEditText studentIdInputText;
   TextInputEditText studentNameInputText;
   TextView studentListTextView;
-  HashMap<Integer, String> studentList = new HashMap<>();
-
+  HashMap<Integer, String> mNewStudentList = new HashMap<>();
+  HashMap<Integer, String> mExistingEnrollments = new HashMap<>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -51,21 +52,30 @@ public class EnrollStudentActivity extends AppCompatActivity {
       }
     });
 
+    mManageCoursesViewModel.getEnrollmentsForCourse(mCourseId).observe(this, enrollments -> {
+      if (enrollments != null && enrollments.size() > 0) {
+        noStudentsTextView.setVisibility(View.INVISIBLE);
+        for (Enrollment enrollment : enrollments) {
+          mExistingEnrollments.put(enrollment.getId(), enrollment.getStudentName());
+          appendEnrollmentList(enrollment.getId(), enrollment.getStudentName());
+        }
+      }
+    });
+
     addStudentFloatingBtn.setOnClickListener(v -> {
       showAddStudentDialog();
     });
 
     confirmEnrollStudentsBtn.setOnClickListener(v -> {
-      Log.d(TAG, "Confirm button clicked: studentList: " + studentList);
-      if (studentList.isEmpty()) {
+      Log.d(TAG, "Confirm button clicked: studentList: " + mNewStudentList);
+      if (mNewStudentList.isEmpty()) {
         Toast.makeText(this, "No students entered", Toast.LENGTH_SHORT).show();
       } else {
-        mManageCoursesViewModel.enrollStudents(mCourseId, studentList);
+        mManageCoursesViewModel.enrollStudents(mCourseId, mNewStudentList);
         Toast.makeText(this, "Enrolled students successfully", Toast.LENGTH_SHORT).show();
         finish();
       }
     });
-
   }
 
   private void showAddStudentDialog() {
@@ -83,18 +93,12 @@ public class EnrollStudentActivity extends AppCompatActivity {
       String studentName = studentNameInputText.getText().toString();
       if (studentId.isEmpty() || studentName.isEmpty()) {
         return;
-      } else if (studentList.containsKey(Integer.parseInt(studentId))) {
+      } else if (mNewStudentList.containsKey(Integer.parseInt(studentId)) || mExistingEnrollments.containsKey(Integer.parseInt(studentId))) {
         Toast.makeText(this, "Student already entered", Toast.LENGTH_SHORT).show();
         return;
       } else {
-        studentList.put(Integer.parseInt(studentId), studentName);
-        StringBuilder sb = new StringBuilder();
-        for (Object id : studentList.keySet().toArray()) {
-          Log.d(TAG, "showAddStudentDialog: studentInfo: " + id);
-          sb.append("ID: ").append(id).append(", Name: ").append(studentList.get(id));
-          sb.append("\n");
-        }
-        studentListTextView.setText(sb.toString());
+        mNewStudentList.put(Integer.parseInt(studentId), studentName);
+        appendEnrollmentList(Integer.parseInt(studentId), studentName);
         studentIdInputText.setText("");
         studentNameInputText.setText("");
         noStudentsTextView.setVisibility(View.INVISIBLE);
@@ -108,4 +112,10 @@ public class EnrollStudentActivity extends AppCompatActivity {
   builder.create().show();
   }
 
+  private void appendEnrollmentList(int studentId, String studentName) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("ID: ").append(studentId).append(", Name: ").append(studentName);
+    sb.append("\n");
+    studentListTextView.append(sb.toString());
+  }
 }

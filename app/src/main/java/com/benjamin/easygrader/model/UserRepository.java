@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
@@ -13,10 +14,14 @@ public class UserRepository {
   private static volatile UserRepository instance;
   private static final String TAG = "UserRepository";
   private final UserDAO mUserDAO;
+  private final CourseDAO mCourseDAO;
+  private final GradeDAO mGradeDAO;
 
   private UserRepository(Application application) {
     AppDatabase db = AppDatabase.getDatabase(application);
     mUserDAO = db.userDAO();
+    mCourseDAO = db.courseDAO();
+    mGradeDAO = db.gradeDAO();
     AppDatabase.databaseWriteExecutor.execute(() -> {
       int numUsers = mUserDAO.getCount();
       if (numUsers == 0) {
@@ -74,10 +79,11 @@ public class UserRepository {
     AppDatabase.databaseWriteExecutor.execute(() -> {
       User userByUsername = mUserDAO.getUserByUsername(username);
       if (userByUsername != null) {
-        Log.d(TAG, "addUser: username taken");
         isUsernameTaken.postValue(true);
+        Log.d(TAG, "addUser: username taken");
         isAddingUser.postValue(false);
       } else {
+        isUsernameTaken.postValue(false);
         User user = new User(username, password, isAdmin);
         Log.d(TAG, "addUser: inserting new user: " + user);
         mUserDAO.insert(user);
@@ -86,14 +92,41 @@ public class UserRepository {
     });
   }
 
-  public User getUserById(int id) {
-    return mUserDAO.getUserById(id);
-  }
-
   public void deleteUser(User user) {
     Log.d(TAG, "deleteUser: " + user);
     AppDatabase.databaseWriteExecutor.execute(() -> {
       mUserDAO.delete(user);
+    });
+  }
+
+  public void hasActiveCourses(int instructorId, MutableLiveData<Boolean> hasActiveCourses) {
+    AppDatabase.databaseWriteExecutor.execute(() -> {
+      List<Course> instructorCourses = mCourseDAO.getInstructorsUnfinalizedCoursesList(instructorId);
+      if (instructorCourses != null) {
+        for (Course course : instructorCourses) {
+          if (!course.isFinalized()) {
+            if (mGradeDAO.getCourseGradedAssignmentsCountInt(course.getId()) > 0) {
+              hasActiveCourses.postValue(true);
+              return;
+            }
+          }
+        }
+      }
+      hasActiveCourses.postValue(false);
+    });
+  }
+
+  public void updateInstructorCourses(int oldInstructorId, int newInstructorId) {
+    AppDatabase.databaseWriteExecutor.execute(() -> {
+      List<Course> instructorCourses = mCourseDAO.getInstructorsUnfinalizedCoursesList(oldInstructorId);
+      if (instructorCourses != null) {
+        List<Course> updatedCourses = new ArrayList<>();
+        for (Course course : instructorCourses) {
+          course.setInstructorId(newInstructorId);
+          updatedCourses.add(course);
+        }
+        mCourseDAO.updateAll(updatedCourses);
+      }
     });
   }
 }

@@ -12,7 +12,6 @@ import com.benjamin.easygrader.view.CreateUserFragment;
 import com.benjamin.easygrader.view.RemoveUserFragment;
 
 public class ManageUsersActivity extends AppCompatActivity {
-
   private static final String TAG = "ManageUsersActivity";
 
   @Override
@@ -35,7 +34,6 @@ public class ManageUsersActivity extends AppCompatActivity {
           break;
       }
     }
-
   }
 
   private void openFragment(Fragment fragment) {
@@ -44,5 +42,4 @@ public class ManageUsersActivity extends AppCompatActivity {
         .add(R.id.manageUsersFragmentView, fragment, null)
         .commit();
   }
-
 }

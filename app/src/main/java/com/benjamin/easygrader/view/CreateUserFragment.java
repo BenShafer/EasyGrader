@@ -71,38 +71,31 @@ public class CreateUserFragment extends Fragment {
         String username = mUsername.getText().toString();
         String password = mPassword.getText().toString();
         String confirmPassword = mConfirmPassword.getText().toString();
-        boolean isAdmin = false;
-        if (mAdminRadioBtn.isChecked()) {
-          isAdmin = true;
-        }
+        boolean isAdmin = mAdminRadioBtn.isChecked();
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || (!mAdminRadioBtn.isChecked() && !mInstructorRadioBtn.isChecked())) {
           Toast.makeText(requireActivity(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
         } else if (!password.equals(confirmPassword)) {
           Toast.makeText(requireActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
         }  else {
-          mIsAddingUser = true;
           mManageUsersViewModel.addUser(username, password, isAdmin);
         }
       }
     });
 
     mManageUsersViewModel.getIsAddingUser().observe(requireActivity(), isAddingUser -> {
-      if (mIsAddingUser) {
+      Log.d(TAG, "getIsAddingUser: mIsAddingUser: " + mIsAddingUser + ", isAddingUser: " + isAddingUser);
         if (isAddingUser) {
+          mIsAddingUser = true;
           mConfirmAddUserBtn.setEnabled(false);
-
         } else {
           mConfirmAddUserBtn.setEnabled(true);
           mIsAddingUser = false;
         }
-
-      }
     });
 
     mManageUsersViewModel.getIsUsernameTaken().observe(requireActivity(), isUsernameTaken -> {
-        Log.d(TAG, "observed getIsUsernameTaken: mIsAddingUser: " + mIsAddingUser);
+      Log.d(TAG, "observed getIsUsernameTaken: mIsAddingUser: " + mIsAddingUser + ", isUsernameTaken: " + isUsernameTaken);
       if (mIsAddingUser) {
-        Log.d(TAG, "observed getIsUsernameTaken: isUsernameTaken: " + isUsernameTaken);
         if (isUsernameTaken) {
           Toast.makeText(requireActivity(), "Username already taken", Toast.LENGTH_SHORT).show();
         } else {

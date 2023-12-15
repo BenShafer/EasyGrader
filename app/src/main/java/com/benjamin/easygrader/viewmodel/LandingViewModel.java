@@ -26,7 +26,4 @@ public class LandingViewModel extends AndroidViewModel {
   public void loadLoggedInUser(int userId) {
     mUserRepository.loadLoggedInUser(userId, mLoggedInUser);
   }
-
-
-
 }

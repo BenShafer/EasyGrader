@@ -1,7 +1,6 @@
 package com.benjamin.easygrader.view;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -23,7 +22,6 @@ public class InstructorSpinnerAdapter extends ArrayAdapter<User> {
 
   @Override
   public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-    Log.d(TAG, "getView: position: " + position);
     View view = super.getView(position, null, parent);
     TextView instructorText = view.findViewById(R.id.spinnerItemText);
     instructorText.setText(getItem(position).getUsername());
@@ -36,5 +34,4 @@ public class InstructorSpinnerAdapter extends ArrayAdapter<User> {
     instructorText.setText(getItem(position).getUsername());
     return view;
   }
-
 }

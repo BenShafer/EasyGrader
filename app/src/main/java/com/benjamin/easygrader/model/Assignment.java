@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity(tableName = AppDatabase.ASSIGNMENT_TABLE)
@@ -23,9 +23,9 @@ public class Assignment {
   private int mPoints;
 
   @ColumnInfo(name="due_date")
-  private Date mDueDate;
+  private LocalDateTime mDueDate;
 
-  public Assignment(int courseId, String name, int points, Date dueDate) {
+  public Assignment(int courseId, String name, int points, LocalDateTime dueDate) {
     mCourseId = courseId;
     mName = name;
     mPoints = points;
@@ -64,11 +64,11 @@ public class Assignment {
     mPoints = points;
   }
 
-  public Date getDueDate() {
+  public LocalDateTime getDueDate() {
     return mDueDate;
   }
 
-  public void setDueDate(Date dueDate) {
+  public void setDueDate(LocalDateTime dueDate) {
     mDueDate = dueDate;
   }
 

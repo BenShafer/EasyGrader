@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import com.benjamin.easygrader.model.Assignment;
 import com.benjamin.easygrader.model.AssignmentRepository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ManageAssignmentsViewModel extends AndroidViewModel {
@@ -21,7 +21,7 @@ public class ManageAssignmentsViewModel extends AndroidViewModel {
     mAssignmentRepository = AssignmentRepository.getAssignmentRepository(application);
   }
 
-  public void addAssignment(int courseId, String assignmentName, int points, Date dueDate) {
+  public void addAssignment(int courseId, String assignmentName, int points, LocalDateTime dueDate) {
     mAssignmentRepository.addAssignment(courseId, assignmentName, points, dueDate);
   }
 
@@ -35,4 +35,7 @@ public class ManageAssignmentsViewModel extends AndroidViewModel {
 
   public void update(Assignment assignment) { mAssignmentRepository.update(assignment); }
 
+  public LiveData<LocalDateTime> getSemesterEndDate(int courseId) {
+    return mAssignmentRepository.getSemesterEndDate(courseId);
+  }
 }
