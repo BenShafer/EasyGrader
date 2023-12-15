@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/userItemView"
+android:id="@+id/assignmentItemView"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:orientation="vertical">
@@ -25,22 +25,22 @@ android:orientation="vertical">
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="80dp"
+            android:layout_marginEnd="4dp"
             android:text="Points:"
-            app:layout_constraintBottom_toBottomOf="@+id/assignmentNameRadioButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/assignmentNameRadioButton" />
+            app:layout_constraintBottom_toBottomOf="@+id/pointsItemText"
+            app:layout_constraintEnd_toStartOf="@+id/pointsItemText"
+            app:layout_constraintTop_toTopOf="@+id/pointsItemText" />
 
         <TextView
             android:id="@+id/pointsItemText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:text="Points"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/assignmentNameRadioButton"
-            app:layout_constraintStart_toEndOf="@+id/textView17"
-            app:layout_constraintTop_toTopOf="@+id/assignmentNameRadioButton" />
+            app:layout_constraintBottom_toBottomOf="@+id/gradedCountText"
+            app:layout_constraintEnd_toStartOf="@+id/gradedCountText"
+            app:layout_constraintTop_toTopOf="@+id/gradedCountText" />
 
         <TextView
             android:id="@+id/dueDateItemText"
@@ -61,6 +61,28 @@ android:orientation="vertical">
             android:text="Due:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/assignmentNameRadioButton" />
+
+        <TextView
+            android:id="@+id/gradedCountText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="1dp"
+            android:text="Graded"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/totalCountText"
+            app:layout_constraintEnd_toStartOf="@+id/totalCountText"
+            app:layout_constraintTop_toTopOf="@+id/totalCountText" />
+
+        <TextView
+            android:id="@+id/totalCountText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Total"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/assignmentNameRadioButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/assignmentNameRadioButton" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

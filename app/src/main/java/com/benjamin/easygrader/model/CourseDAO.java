@@ -37,6 +37,10 @@ public interface CourseDAO {
       "JOIN " + AppDatabase.USER_TABLE + " u ON c.instructor_id = u.mId")
   LiveData<Map<Course, User>> getCoursesWithInstructor();
 
+  @Query("SELECT * FROM " + AppDatabase.COURSE_TABLE + " c " +
+      "WHERE c.is_finalized = 0 AND c.instructor_id = :instructorId")
+  LiveData<List<Course>> getInstructorsUnfinalizedCourses(int instructorId);
+
 
 
 }

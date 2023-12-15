@@ -8,40 +8,37 @@ import android.widget.TextView;
 
 import com.benjamin.easygrader.util.Destination;
 import com.benjamin.easygrader.util.IntentFactory;
-import com.benjamin.easygrader.view.AddAssignmentFragment;
-import com.benjamin.easygrader.view.ModifyAssignmentFragment;
-import com.benjamin.easygrader.view.RemoveAssignmentFragment;
+import com.benjamin.easygrader.view.FinalizeGradesFragment;
+import com.benjamin.easygrader.view.GradeAssignmentFragment;
 
-public class ManageAssignmentsActivity extends AppCompatActivity {
-  private static final String TAG = "ManageAssignmentsActivity";
+public class ManageGradesActivity extends AppCompatActivity {
+  private static final String TAG = "ManageGradesActivity";
 
   private int mCourseId;
   private String mCourseName;
+  private int mUserId;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_manage_assignments);
+    setContentView(R.layout.activity_manage_grades);
 
     Destination destination = (Destination) getIntent().getSerializableExtra(IntentFactory.DESTINATION_EXTRA);
     mCourseId = getIntent().getIntExtra(IntentFactory.COURSE_ID_EXTRA, -1);
     mCourseName = getIntent().getStringExtra(IntentFactory.COURSE_NAME_EXTRA);
+    mUserId = getIntent().getIntExtra(IntentFactory.USER_ID_EXTRA, -1);
 
     TextView header = findViewById(R.id.headerText);
 
     if (savedInstanceState == null) {
       switch (destination) {
-        case ADD_ASSIGNMENT:
-          header.setText("Add a new assignment for " + mCourseName);
-          openFragment(AddAssignmentFragment.newInstance(mCourseId));
+        case GRADE_ASSIGNMENT:
+          header.setText("Grade assignments for " + mCourseName);
+          openFragment(GradeAssignmentFragment.newInstance(mCourseId));
           break;
-        case REMOVE_ASSIGNMENT:
-          header.setText("Remove an assignment from " + mCourseName);
-          openFragment(RemoveAssignmentFragment.newInstance(mCourseId));
-          break;
-        case MODIFY_ASSIGNMENT:
-          header.setText("Modify an assignment in " + mCourseName);
-          openFragment(ModifyAssignmentFragment.newInstance(mCourseId));
+        case FINALIZE_GRADES:
+          header.setText("Finalize Grades");
+          openFragment(FinalizeGradesFragment.newInstance(mUserId));
           break;
       }
     }
@@ -50,7 +47,7 @@ public class ManageAssignmentsActivity extends AppCompatActivity {
   private void openFragment(Fragment fragment) {
     getSupportFragmentManager().beginTransaction()
         .setReorderingAllowed(true)
-        .add(R.id.manageAssignmentsFragmentView, fragment, null)
+        .add(R.id.manageGradesFragmentView, fragment, null)
         .commit();
   }
 }

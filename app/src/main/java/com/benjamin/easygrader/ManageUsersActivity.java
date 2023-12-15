@@ -41,7 +41,7 @@ public class ManageUsersActivity extends AppCompatActivity {
   private void openFragment(Fragment fragment) {
     getSupportFragmentManager().beginTransaction()
         .setReorderingAllowed(true)
-        .add(R.id.manageCoursesFragmentView, fragment, null)
+        .add(R.id.manageUsersFragmentView, fragment, null)
         .commit();
   }
 
