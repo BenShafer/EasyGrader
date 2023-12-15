@@ -5,8 +5,8 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AssignmentRepository {
@@ -16,12 +16,14 @@ public class AssignmentRepository {
   private final AssignmentDAO mAssignmentDAO;
   private final GradeDAO mGradeDAO;
   private final EnrollmentDAO mEnrollmentDAO;
+  private final CourseDAO mCourseDAO;
 
   private AssignmentRepository(Application application) {
     AppDatabase db = AppDatabase.getDatabase(application);
     mAssignmentDAO = db.assignmentDAO();
     mGradeDAO = db.gradeDAO();
     mEnrollmentDAO = db.enrollmentDAO();
+    mCourseDAO = db.courseDAO();
   }
 
   public static AssignmentRepository getAssignmentRepository(final Application application) {
@@ -32,10 +34,10 @@ public class AssignmentRepository {
         }
       }
     }
-    return instance;
+  return instance;
   }
 
-  public void addAssignment(int courseId, String assignmentName, int points, Date dueDate) {
+  public void addAssignment(int courseId, String assignmentName, int points, LocalDateTime dueDate) {
     Assignment assignment = new Assignment(courseId, assignmentName, points, dueDate);
     AppDatabase.databaseWriteExecutor.execute(() -> {
       Log.d(TAG, "addAssignment: " + assignment);
@@ -45,9 +47,8 @@ public class AssignmentRepository {
   }
 
   private void createGradesForAssignment(long assignmentId, int courseId) {
-//    AppDatabase.databaseWriteExecutor.execute(() -> {
-      List<Grade> grades = new ArrayList<>();
-      List<Long> enrollmentIds = mEnrollmentDAO.getEnrollmentIdsForCourse(courseId);
+    List<Grade> grades = new ArrayList<>();
+    List<Long> enrollmentIds = mEnrollmentDAO.getEnrollmentIdsForCourse(courseId);
     Log.d(TAG, "createGradesForAssignment: making grades for enrollments: " + enrollmentIds + " for assignment: " + assignmentId + " for course: " + courseId);
       for (long enrollmentId : enrollmentIds) {
         Grade grade = new Grade((int) assignmentId, (int) enrollmentId);
@@ -55,7 +56,6 @@ public class AssignmentRepository {
       }
     Log.d(TAG, "createGradesForAssignment: inserting grades: " + grades);
       mGradeDAO.insertAll(grades);
-//    });
   }
 
   public LiveData<List<Assignment>> getAssignmentsByCourseId(int courseId) {
@@ -72,6 +72,10 @@ public class AssignmentRepository {
     AppDatabase.databaseWriteExecutor.execute(() -> {
       mAssignmentDAO.update(assignment);
     });
+  }
+
+  public LiveData<LocalDateTime> getSemesterEndDate(int courseId) {
+    return mCourseDAO.getSemesterEndDate(courseId);
   }
 
 }

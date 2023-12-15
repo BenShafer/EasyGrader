@@ -24,13 +24,9 @@ public interface EnrollmentDAO {
   @Delete
   void delete(Enrollment enrollment);
 
-  @Query("SELECT * FROM " + AppDatabase.ENROLLMENT_TABLE)
-  List<Enrollment> getAllEnrollments();
+  @Query("SELECT * FROM " + AppDatabase.ENROLLMENT_TABLE + " WHERE course_id = :courseId")
+  LiveData<List<Enrollment>> getEnrollmentsForCourse(int courseId);
 
   @Query("SELECT e.mId FROM " + AppDatabase.ENROLLMENT_TABLE + " e WHERE course_id = :courseId")
   List<Long> getEnrollmentIdsForCourse(int courseId);
-
-  @Query("SELECT COUNT(*) FROM " + AppDatabase.ENROLLMENT_TABLE + " WHERE course_id = :courseId")
-  LiveData<Integer> getEnrollmentCountForCourse(int courseId);
-
 }

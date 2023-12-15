@@ -2,13 +2,9 @@ package com.benjamin.easygrader.view;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.benjamin.easygrader.R;
@@ -26,9 +21,10 @@ import com.benjamin.easygrader.model.Assignment;
 import com.benjamin.easygrader.viewmodel.ManageAssignmentsViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,15 +33,15 @@ import java.util.Date;
  */
 public class ModifyAssignmentFragment extends Fragment {
   private static final String TAG = "ModifyAssignmentFragmen";
-
   private static final String ARG_COURSE_ID = "courseId";
 
   private ManageAssignmentsViewModel mManageAssignmentsViewModel;
-
   private int mCourseId;
-  private Date mDueDate;
+  private LocalDateTime mDueDate;
   private Assignment mSelectedAssignment;
   private AssignmentAdapter mAssignmentAdapter;
+  private LocalDateTime mSemesterEndDate;
+  private final List<String> mAssignmentNames = new ArrayList<>();
 
   public ModifyAssignmentFragment() {
     // Required empty public constructor
@@ -84,8 +80,11 @@ public class ModifyAssignmentFragment extends Fragment {
     Button mModifyAssignmentButton = view.findViewById(R.id.modifyAssignmentBtn);
     RecyclerView mAssignmentsRecyclerView = view.findViewById(R.id.modifyAssignmentsRecycler);
 
-    mAssignmentsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    mManageAssignmentsViewModel.getSemesterEndDate(mCourseId).observe(getViewLifecycleOwner(), date -> {
+      mSemesterEndDate = date;
+    });
 
+    mAssignmentsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     mAssignmentAdapter = new AssignmentAdapter(new ArrayList<>(), assignment -> {
       mSelectedAssignment = assignment;
       Log.d(TAG, "onAssignmentSelected: selected " + mSelectedAssignment);
@@ -94,7 +93,9 @@ public class ModifyAssignmentFragment extends Fragment {
 
     mManageAssignmentsViewModel.getAssignmentsByCourseId(mCourseId).observe(getViewLifecycleOwner(), assignments -> {
       mAssignmentAdapter.setAssignmentList(assignments);
-//      mAssignmentAdapter.notifyDataSetChanged();
+      for (int i = 0; i < assignments.size(); i++) {
+        mAssignmentNames.add(assignments.get(i).getName());
+      }
     });
 
     mModifyAssignmentButton.setOnClickListener(v -> {
@@ -104,7 +105,6 @@ public class ModifyAssignmentFragment extends Fragment {
         Toast.makeText(requireContext(), "Please select an assignment", Toast.LENGTH_SHORT).show();
       }
     });
-
 
     return view;
   }
@@ -120,16 +120,18 @@ public class ModifyAssignmentFragment extends Fragment {
     mPointsInputText.setText(String.valueOf(mSelectedAssignment.getPoints()));
     mDueDate = mSelectedAssignment.getDueDate();
     mModifyDueDateInputText.setText(mDueDate.toString());
+    mAssignmentNameText.setError(null);
 
     mModifyDueDateInputText.setOnClickListener(v -> {
-      AddAssignmentFragment.DialogDatePicker dialogDatePicker = new AddAssignmentFragment.DialogDatePicker();
-      dialogDatePicker.show(getChildFragmentManager(), new AddAssignmentFragment.DialogDatePicker.OnDateSetListener() {
-        @Override
-        public void onDateSetListener(Date date) {
-          mDueDate = date;
-          mModifyDueDateInputText.setText(mDueDate.toString());
-        }
+      DatePickerDialog datePicker = new DatePickerDialog(getContext());
+      datePicker.setOnDateSetListener((view1, year, month, day) -> {
+        mDueDate = LocalDateTime.of(year, month+1, day, 23, 59, 59);
+        mModifyDueDateInputText.setText(mDueDate.toString());
+        Log.d(TAG, "onCreateView: mDueDate: " + mDueDate.toString());
       });
+      datePicker.getDatePicker().setMinDate(System.currentTimeMillis());
+      datePicker.getDatePicker().setMaxDate(mSemesterEndDate.atZone(ZoneId.of("PST")).toEpochSecond() * 1000);
+      datePicker.show();
     });
 
     AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -142,6 +144,9 @@ public class ModifyAssignmentFragment extends Fragment {
 
               if (assignmentName.isEmpty() || points.isEmpty() || dueDate.isEmpty()) {
                 Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
+              } else if (mAssignmentNames.contains(assignmentName) && !assignmentName.equals(mSelectedAssignment.getName())) {
+                mAssignmentNameText.setError("Assignment name already exists");
+                Toast.makeText(getContext(), "Choose a different name. An assignment with that name already exists", Toast.LENGTH_LONG).show();
               } else {
                 mSelectedAssignment.setName(assignmentName);
                 mSelectedAssignment.setPoints(Integer.parseInt(points));
@@ -154,37 +159,4 @@ public class ModifyAssignmentFragment extends Fragment {
             .create()
             .show();
   }
-
-  public static class DialogDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-    private static final String TAG = "DialogDatePicker";
-    AddAssignmentFragment.DialogDatePicker.OnDateSetListener mListener;
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-      // Use the current date as the default date in the picker
-      final Calendar c = Calendar.getInstance();
-      int year = c.get(Calendar.YEAR);
-      int month = c.get(Calendar.MONTH);
-      int day = c.get(Calendar.DAY_OF_MONTH);
-      // Create a new instance of DatePickerDialog and return it
-      return new DatePickerDialog(getActivity(), this, year, month, day);
-    }
-
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-      Date dueDate = new Date(year, month, day, 23, 59, 59);
-      mListener.onDateSetListener(dueDate);
-    }
-
-    public void show(FragmentManager manager, AddAssignmentFragment.DialogDatePicker.OnDateSetListener listener) {
-      super.show(manager, TAG);
-      mListener = listener;
-    }
-
-    public interface OnDateSetListener {
-      void onDateSetListener(Date date);
-    }
-  }
-
 }

@@ -27,7 +27,7 @@ public class SelectCourseViewModel extends AndroidViewModel {
       if (user.isAdmin()) {
         return mCourseRepository.getAllCoursesWithInstructor();
       } else {
-        return mCourseRepository.getCoursesByInstructorId(user.getId());
+        return mCourseRepository.getInstructorWithUnfinalizedCourses(user.getId());
       }
     }
     return mCourseRepository.getCoursesByInstructorId(-1);
@@ -44,6 +44,4 @@ public class SelectCourseViewModel extends AndroidViewModel {
   }
 
   public LiveData<User> getLoggedInUser() { return mLoggedInUser; }
-
-
 }

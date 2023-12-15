@@ -75,6 +75,7 @@ public class FinalizeGradesFragment extends Fragment {
     mCourseGradesRecycler.setAdapter(mCourseGradesAdapter);
 
     mManageGradesViewModel.getInstructorsUnfinalizedCourses(mUserId).observe(getViewLifecycleOwner(), unfinalizedCourses -> {
+      Log.d(TAG, "onCreateView: unfinalized courses: " + unfinalizedCourses);
       mCourseGradesAdapter.setCourseGradesList(unfinalizedCourses);
     });
 
@@ -87,7 +88,7 @@ public class FinalizeGradesFragment extends Fragment {
             mManageGradesViewModel.finalizeGradesForCourse(mSelectedCourse);
             mSelectedCourse = null;
           } else {
-            Toast.makeText(getContext(), "No courses selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Unable to finalize. Ungraded assignments exist", Toast.LENGTH_LONG).show();
           }
         } else {
           Toast.makeText(getContext(), "No courses selected", Toast.LENGTH_SHORT).show();

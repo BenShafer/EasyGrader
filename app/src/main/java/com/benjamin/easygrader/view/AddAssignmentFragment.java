@@ -1,13 +1,9 @@
 package com.benjamin.easygrader.view;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -15,15 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.benjamin.easygrader.R;
 import com.benjamin.easygrader.viewmodel.ManageAssignmentsViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +32,9 @@ public class AddAssignmentFragment extends Fragment {
   private static final String ARG_COURSE_ID = "courseId";
 
   private int mCourseId;
-  private Date mDueDate;
+  private LocalDateTime mDueDate;
+  private LocalDateTime mSemesterEndDate;
+  private final List<String> mAssignmentNames = new ArrayList<>();
 
   public AddAssignmentFragment() {
     // Required empty public constructor
@@ -76,22 +75,37 @@ public class AddAssignmentFragment extends Fragment {
     Button mConfirmAddAssignmentBtn = view.findViewById(R.id.confirmAddAssignmentBtn);
     TextInputEditText mDueDateInput = view.findViewById(R.id.dueDateInputText);
 
+    mManageAssignmentsViewModel.getSemesterEndDate(mCourseId).observe(getViewLifecycleOwner(), date -> {
+      mSemesterEndDate = date;
+    });
+
+    mManageAssignmentsViewModel.getAssignmentsByCourseId(mCourseId).observe(getViewLifecycleOwner(), assignments -> {
+      for (int i = 0; i < assignments.size(); i++) {
+        mAssignmentNames.add(assignments.get(i).getName());
+      }
+    });
+
     mDueDateInput.setOnClickListener(v -> {
-      DialogDatePicker dialogDatePicker = new DialogDatePicker();
-      dialogDatePicker.show(getChildFragmentManager(), new DialogDatePicker.OnDateSetListener() {
-        @Override
-        public void onDateSetListener(Date date) {
-          mDueDate = date;
-          mDueDateInput.setText(mDueDate.toString());
-        }
+      DatePickerDialog datePicker = new DatePickerDialog(getContext());
+      datePicker.setOnDateSetListener((view1, year, month, day) -> {
+        mDueDate = LocalDateTime.of(year, month+1, day, 23, 59, 59);
+        mDueDateInput.setText(mDueDate.toString());
+        Log.d(TAG, "onCreateView: mDueDate: " + mDueDate.toString());
       });
+      datePicker.getDatePicker().setMinDate(System.currentTimeMillis());
+      datePicker.getDatePicker().setMaxDate(mSemesterEndDate.atZone(ZoneId.of("PST")).toEpochSecond() * 1000);
+      datePicker.show();
     });
 
     mConfirmAddAssignmentBtn.setOnClickListener(v -> {
       String assignmentName = mAssignmentNameInput.getText().toString();
       String totalPoints = mTotalPointsInput.getText().toString();
+      mAssignmentNameInput.setError(null);
       if (assignmentName.isEmpty() || totalPoints.isEmpty() || mDueDate == null) {
         Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
+      } else if (mAssignmentNames.contains(assignmentName)){
+        mAssignmentNameInput.setError("Assignment name already exists");
+        Toast.makeText(getContext(), "Choose a different name. An assignment with that name already exists", Toast.LENGTH_LONG).show();
       } else {
         mManageAssignmentsViewModel.addAssignment(mCourseId, assignmentName, Integer.parseInt(totalPoints), mDueDate);
         Toast.makeText(getContext(), "Assignment added", Toast.LENGTH_SHORT).show();
@@ -103,37 +117,4 @@ public class AddAssignmentFragment extends Fragment {
 
     return view;
   }
-
-  public static class DialogDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-
-    private static final String TAG = "DialogDatePicker";
-    OnDateSetListener mListener;
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-      // Use the current date as the default date in the picker
-      final Calendar c = Calendar.getInstance();
-      int year = c.get(Calendar.YEAR);
-      int month = c.get(Calendar.MONTH);
-      int day = c.get(Calendar.DAY_OF_MONTH);
-      // Create a new instance of DatePickerDialog and return it
-      return new DatePickerDialog(getActivity(), this, year, month, day);
-    }
-
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-      Date dueDate = new Date(year, month, day, 23, 59, 59);
-      mListener.onDateSetListener(dueDate);
-    }
-
-    public void show(FragmentManager manager, OnDateSetListener listener) {
-      super.show(manager, TAG);
-      mListener = listener;
-    }
-
-    public interface OnDateSetListener {
-      void onDateSetListener(Date date);
-    }
-  }
-
 }
