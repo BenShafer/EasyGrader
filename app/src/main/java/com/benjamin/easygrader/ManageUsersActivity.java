@@ -1,6 +1,7 @@
 package com.benjamin.easygrader;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -26,20 +27,22 @@ public class ManageUsersActivity extends AppCompatActivity {
       switch(destination) {
         case CREATE_USER:
           header.setText("Create a new user");
-          getSupportFragmentManager().beginTransaction()
-              .setReorderingAllowed(true)
-              .add(R.id.manageUsersFragmentView, CreateUserFragment.class, null)
-              .commit();
+          openFragment(CreateUserFragment.newInstance());
           break;
         case REMOVE_USER:
           header.setText("Remove a user");
-          getSupportFragmentManager().beginTransaction()
-              .setReorderingAllowed(true)
-              .add(R.id.manageUsersFragmentView, RemoveUserFragment.class, null)
-              .commit();
+          openFragment(RemoveUserFragment.newInstance());
           break;
       }
     }
 
   }
+
+  private void openFragment(Fragment fragment) {
+    getSupportFragmentManager().beginTransaction()
+        .setReorderingAllowed(true)
+        .add(R.id.manageCoursesFragmentView, fragment, null)
+        .commit();
+  }
+
 }

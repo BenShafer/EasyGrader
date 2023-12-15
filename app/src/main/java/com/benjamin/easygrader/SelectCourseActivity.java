@@ -27,6 +27,7 @@ public class SelectCourseActivity extends AppCompatActivity {
   private int mUserId;
   private User mUser;
   private Course mSelectedCourse;
+
   Button mSelectCourseBtn;
   RecyclerView mSelectCourseRecyclerView;
 
@@ -61,12 +62,6 @@ public class SelectCourseActivity extends AppCompatActivity {
     });
     mSelectCourseRecyclerView.setAdapter(mCourseAdapter);
 
-//    mSelectCourseViewModel.getCoursesForUser(mUser).observe(this, courses -> {
-//      Log.d(TAG, "Observed getCoursesForUser: " + mUser);
-//      if (courses != null) {
-//        mCourseAdapter.setCourseList(courses);
-//      }
-//    });
     mSelectCourseViewModel.coursesForUser.observe(this, courses -> {
       Log.d(TAG, "Observed getCoursesForUser: " + mUser);
       if (courses != null) {
@@ -75,12 +70,12 @@ public class SelectCourseActivity extends AppCompatActivity {
     });
     mSelectCourseRecyclerView.setAdapter(mCourseAdapter);
 
-
     mSelectCourseBtn.setOnClickListener(view -> {
       Log.d(TAG, "Selected course: " + mSelectedCourse);
       if (mSelectedCourse != null) {
         Intent intent = new Intent();
         intent.putExtra(IntentFactory.COURSE_ID_EXTRA, mSelectedCourse.getId());
+        intent.putExtra(IntentFactory.COURSE_NAME_EXTRA, mSelectedCourse.getName());
         setResult(RESULT_OK, intent);
         finish();
       } else {

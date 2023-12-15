@@ -1,6 +1,7 @@
 package com.benjamin.easygrader;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -24,20 +25,22 @@ public class ManageCoursesActivity extends AppCompatActivity {
       switch(destination) {
         case ADD_COURSE:
           header.setText("Add a new course");
-          getSupportFragmentManager().beginTransaction()
-              .setReorderingAllowed(true)
-              .add(R.id.manageCoursesFragmentView, AddCourseFragment.class, null)
-              .commit();
+          openFragment(AddCourseFragment.newInstance());
           break;
         case REMOVE_COURSE:
           header.setText("Remove a course");
-          getSupportFragmentManager().beginTransaction()
-              .setReorderingAllowed(true)
-              .add(R.id.manageCoursesFragmentView, RemoveCourseFragment.class, null)
-              .commit();
+          openFragment(RemoveCourseFragment.newInstance());
           break;
       }
     }
 
   }
+
+  private void openFragment(Fragment fragment) {
+    getSupportFragmentManager().beginTransaction()
+        .setReorderingAllowed(true)
+        .add(R.id.manageCoursesFragmentView, fragment, null)
+        .commit();
+  }
+
 }

@@ -12,7 +12,7 @@ import com.benjamin.easygrader.util.DataTypeConverter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {User.class, Course.class, Enrollment.class}, version = 3, exportSchema = false)
+@Database(entities = {User.class, Course.class, Enrollment.class, Assignment.class}, version = 4, exportSchema = false)
 @TypeConverters(DataTypeConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -28,6 +28,8 @@ public abstract class AppDatabase extends RoomDatabase {
   public abstract UserDAO userDAO();
   public abstract CourseDAO courseDAO();
   public abstract EnrollmentDAO enrollmentDAO();
+  public abstract AssignmentDAO assignmentDAO();
+
 
   public static AppDatabase getDatabase(final Context context) {
     if (INSTANCE == null) {

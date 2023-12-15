@@ -67,17 +67,17 @@ public class AdminLandingPageActivity extends AppCompatActivity {
     });
 
     ActivityResultLauncher<Intent> startSelectCourseActivityForId = registerForActivityResult(
-        new ActivityResultContracts.StartActivityForResult(),
-        result -> {
-          if (result.getResultCode() == RESULT_OK) {
-            Intent data = result.getData();
-            if (data != null) {
-              mCourseId = data.getIntExtra(IntentFactory.COURSE_ID_EXTRA, -1);
-              Log.d(TAG, "result callback: courseId = " + mCourseId);
-              startActivity(IntentFactory.getEnrollStudentActivityIntent(getApplicationContext(), mCourseId));
-            }
+      new ActivityResultContracts.StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == RESULT_OK) {
+          Intent data = result.getData();
+          if (data != null) {
+            mCourseId = data.getIntExtra(IntentFactory.COURSE_ID_EXTRA, -1);
+            Log.d(TAG, "result callback: courseId = " + mCourseId);
+            startActivity(IntentFactory.getEnrollStudentActivityIntent(getApplicationContext(), mCourseId));
           }
-        });
+        }
+    });
 
     mAddUserButton.setOnClickListener(view -> {
       startActivity(IntentFactory.getManageUsersActivityIntent(getApplicationContext(), Destination.CREATE_USER));
